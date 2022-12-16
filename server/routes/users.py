@@ -34,12 +34,11 @@ class UsersRoute:
         @users.route("/update", methods=['put'])
         @jwt_required()
         def update_user():
-
             # # print((request.json))
             # print(request.data)
 
             obj = request.form
-            print(obj)
+            print(obj, "data of update")
             # get_jwt_identity contains email of user current
             email = get_jwt_identity()
             self.user_bll.update_user_by_email(email, obj)

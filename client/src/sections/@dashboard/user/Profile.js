@@ -91,7 +91,7 @@ export default function Profile({ isEdit = false, currentUser }) {
 
       //  const bodyFormData = new FormData();
       //  bodyFormData.append('file', data.avatarUrl);
-
+      console.log(data);
       dispatch(update(data));
       reset();
       navigate('/dashboard'); // navigate to path that you want to be there after updated

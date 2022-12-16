@@ -24,6 +24,7 @@ const login = async (userData) => {
 };
 
 const update = async (userData, token) => {
+  console.log(userData);
   const response = await axios.put(`${API_URL}users/update`, userData, {
     headers: {
       // 'Content-Type': 'application/json',
