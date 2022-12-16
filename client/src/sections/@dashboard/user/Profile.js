@@ -10,7 +10,7 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Card, Grid, Stack, Typography } from '@mui/material';
 // redux
 import { useDispatch } from 'react-redux';
-
+import { update } from '../../../features/auth/authSlice';
 // utils
 
 import { fData } from '../../../utils/formatNumber';
@@ -92,6 +92,7 @@ export default function Profile({ isEdit = false, currentUser }) {
       //  const bodyFormData = new FormData();
       //  bodyFormData.append('file', data.avatarUrl);
 
+      dispatch(update(data));
       reset();
       navigate('/dashboard'); // navigate to path that you want to be there after updated
       // console.log('DATA', data);
