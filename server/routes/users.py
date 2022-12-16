@@ -31,25 +31,6 @@ class UsersRoute:
 
         # Update user
 
-        @users.route("/update", methods=['put'])
-        @jwt_required()
-        def update_user():
-            # # print((request.json))
-            # print(request.data)
-
-            obj = request.form
-            print(obj, "data of update")
-            # get_jwt_identity contains email of user current
-            email = get_jwt_identity()
-            self.user_bll.update_user_by_email(email, obj)
-            user = self.user_bll.get_user_by_email(obj['email'])
-
-            del user["_id"]
-            del user["password"]
-            # create token new
-            user["access_token"] = create_access_token(identity=obj['email'])
-            return jsonify(user)
-
         # Delete user
 
         @users.route("/<id>", methods=['DELETE'])
