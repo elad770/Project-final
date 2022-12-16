@@ -87,7 +87,20 @@ export const authSlice = createSlice({
         state.message = action.payload;
         state.user = null;
       })
-
+      .addCase(update.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(update.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user = action.payload;
+      })
+      .addCase(update.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+        state.user = null;
+      })
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
       });

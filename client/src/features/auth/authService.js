@@ -23,6 +23,23 @@ const login = async (userData) => {
   return response.data;
 };
 
+const update = async (userData, token) => {
+  const response = await axios.put(`${API_URL}users/update`, userData, {
+    headers: {
+      // 'Content-Type': 'application/json',
+      'Content-Type': 'multipart/form-data',
+      // 'Access-Control-Allow-Origin': '*',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (response.data) {
+    localStorage.setItem('user', JSON.stringify(response.data));
+  }
+
+  return response.data;
+};
+
 // Logout user
 const logout = () => {
   localStorage.removeItem('user');
@@ -31,7 +48,7 @@ const logout = () => {
 const authService = {
   register,
   login,
-  // update,
+  update,
   logout,
 };
 
