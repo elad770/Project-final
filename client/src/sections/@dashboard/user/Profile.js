@@ -4,12 +4,13 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 // form
 import { useForm } from 'react-hook-form';
+import axios from 'axios';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import { LoadingButton } from '@mui/lab';
 import { Box, Card, Grid, Stack, Typography } from '@mui/material';
 // redux
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { update } from '../../../features/auth/authSlice';
 // utils
 
@@ -29,7 +30,7 @@ Profile.propTypes = {
 export default function Profile({ isEdit = false, currentUser }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // const { user } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
 
   const NewUserSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
@@ -89,9 +90,9 @@ export default function Profile({ isEdit = false, currentUser }) {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      //  const bodyFormData = new FormData();
-      //  bodyFormData.append('file', data.avatarUrl);
-
+      const name = 'avatarUrl';
+      delete data[name];
+      console.log(data);
       dispatch(update(data));
       reset();
       navigate('/dashboard'); // navigate to path that you want to be there after updated
@@ -111,81 +112,97 @@ export default function Profile({ isEdit = false, currentUser }) {
 
       if (file) {
         setValue('avatarUrl', newFile, { shouldValidate: true });
+
+        const dat = new FormData();
+        dat.append('file', acceptedFiles[0]);
+        console.log(acceptedFiles[0]);
+
+        const data = new FormData();
+        data.append('file', acceptedFiles[0]);
+        fetch(`http://127.0.0.1:5000/users/uploadImage`, {
+          method: 'post',
+          headers: new Headers({
+            Authorization: `Bearer ${user.access_token}`,
+          }),
+          body: data,
+        });
       }
     },
     [setValue]
   );
 
   return (
-    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
-          <Card sx={{ pt: 10, pb: 5, px: 3 }}>
-            <Box sx={{ mb: 5 }}>
-              <RHFUploadAvatar
-                name="avatarUrl"
-                maxSize={3145728}
-                onDrop={handleDrop}
-                helperText={
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      mt: 2,
-                      mx: 'auto',
-                      display: 'block',
-                      textAlign: 'center',
-                      color: 'text.secondary',
-                    }}
-                  >
-                    Allowed *.jpeg, *.jpg, *.png, *.gif
-                    <br /> max size of {fData(3145728)}
-                  </Typography>
-                }
-              />
-            </Box>
-          </Card>
+    <>
+      <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={4}>
+            <Card sx={{ pt: 10, pb: 5, px: 3 }}>
+              <Box sx={{ mb: 5 }}>
+                <RHFUploadAvatar
+                  name="avatarUrl"
+                  maxSize={3145728}
+                  onDrop={handleDrop}
+                  helperText={
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        mt: 2,
+                        mx: 'auto',
+                        display: 'block',
+                        textAlign: 'center',
+                        color: 'text.secondary',
+                      }}
+                    >
+                      Allowed *.jpeg, *.jpg, *.png, *.gif
+                      <br /> max size of {fData(3145728)}
+                    </Typography>
+                  }
+                />
+              </Box>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} md={8}>
+            <Card sx={{ p: 3 }}>
+              <Box
+                rowGap={3}
+                columnGap={2}
+                display="grid"
+                gridTemplateColumns={{
+                  xs: 'repeat(1, 1fr)',
+                  sm: 'repeat(2, 1fr)',
+                }}
+              >
+                <RHFTextField name="name" label="Full Name" />
+                <RHFTextField name="email" label="Email Address" />
+                <RHFTextField name="phoneNumber" label="Phone Number" />
+
+                <RHFSelect native name="country" label="Country" placeholder="Country">
+                  <option value="" />
+                  {countries.map((country) => (
+                    <option key={country.code} value={country.label}>
+                      {country.label}
+                    </option>
+                  ))}
+                </RHFSelect>
+
+                <RHFTextField name="state" label="State/Region" />
+                <RHFTextField name="city" label="City" />
+                <RHFTextField name="address" label="Address" />
+                <RHFTextField name="zipCode" label="Zip/Code" />
+                <RHFTextField name="company" label="Company" />
+                <RHFTextField name="role" label="Role" />
+              </Box>
+
+              <Stack alignItems="flex-end" sx={{ mt: 3 }}>
+                <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                  {!isEdit ? 'Create User' : 'Save Changes'}
+                </LoadingButton>
+              </Stack>
+            </Card>
+          </Grid>
         </Grid>
-
-        <Grid item xs={12} md={8}>
-          <Card sx={{ p: 3 }}>
-            <Box
-              rowGap={3}
-              columnGap={2}
-              display="grid"
-              gridTemplateColumns={{
-                xs: 'repeat(1, 1fr)',
-                sm: 'repeat(2, 1fr)',
-              }}
-            >
-              <RHFTextField name="name" label="Full Name" />
-              <RHFTextField name="email" label="Email Address" />
-              <RHFTextField name="phoneNumber" label="Phone Number" />
-
-              <RHFSelect native name="country" label="Country" placeholder="Country">
-                <option value="" />
-                {countries.map((country) => (
-                  <option key={country.code} value={country.label}>
-                    {country.label}
-                  </option>
-                ))}
-              </RHFSelect>
-
-              <RHFTextField name="state" label="State/Region" />
-              <RHFTextField name="city" label="City" />
-              <RHFTextField name="address" label="Address" />
-              <RHFTextField name="zipCode" label="Zip/Code" />
-              <RHFTextField name="company" label="Company" />
-              <RHFTextField name="role" label="Role" />
-            </Box>
-
-            <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-              <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                {!isEdit ? 'Create User' : 'Save Changes'}
-              </LoadingButton>
-            </Stack>
-          </Card>
-        </Grid>
-      </Grid>
-    </FormProvider>
+      </FormProvider>
+    </>
   );
 }

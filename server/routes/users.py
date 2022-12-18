@@ -1,6 +1,9 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
 from BLL.users import UsersBLL
+from pathlib import Path
+import os
+import random
 
 
 class UsersRoute:
@@ -34,20 +37,56 @@ class UsersRoute:
         @jwt_required()
         def update_user():
             # # print((request.json))
-            # print(request.data)
 
             obj = request.form
             print(obj)
+
             # get_jwt_identity contains email of user current
             email = get_jwt_identity()
             self.user_bll.update_user_by_email(email, obj)
             user = self.user_bll.get_user_by_email(obj['email'])
 
             del user["_id"]
-            del user["password"]
+            if "password" in obj.keys():
+                del user["password"]
             # create token new
             user["access_token"] = create_access_token(identity=obj['email'])
             return jsonify(user)
+
+        # upload image
+
+        @users.route("/uploadImage", methods=['post'])
+        @jwt_required()
+        def upload_image():
+            try:
+                file = request.files['file']
+                email = get_jwt_identity()
+                user = self.user_bll.get_user_by_email(email)
+                UPLOAD_FOLDER = "{0}{1}".format(
+                    Path(__file__).parent.parent, "\\Images_Users\\")
+                target = os.path.join(
+                    UPLOAD_FOLDER, 'user_{0}'.format(user['_id']))
+                if not os.path.isdir(target):
+                    os.mkdir(target)
+                print(file.filename)
+                # split file name In order to create a new name
+                splitat = file.filename.rfind('.')
+                left, right = file.filename[:splitat], file.filename[splitat:]
+                #file_name_rand = str(random.randint(100000000, 500000000))
+
+                # A concatenation of the original file name with the user id
+                new_name_file = left + "_" + str(user['_id']) + right
+                print(new_name_file)
+                destination = "/".join([
+                                       target, new_name_file])
+                # print(destination)
+                file.save(destination)
+                self.user_bll.update_user_by_email(
+                    email, {"avatarUrl": destination})
+
+            except:
+                return "error"
+            return "succes"
 
         # Delete user
 
