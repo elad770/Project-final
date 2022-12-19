@@ -82,13 +82,15 @@ class UsersRoute:
                                        target, new_name_file])
                 destination2 = "/".join([
                     tr, new_name_file])
-                # print(destination)
+                print(destination)
                 file.save(destination)
                 self.user_bll.update_user_by_email(
                     email, {"avatarUrl": destination})
 
             except:
+                print("error")
                 return "error"
+            print("succes")
             return "succes"
 
         # Delete user
