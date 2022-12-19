@@ -13,11 +13,13 @@ class AuthBLL:
             # encode password
             if password == user['password']:
                 access_token = create_access_token(identity=email)
+
                 user_data = {'firstName': user['firstName'],
                              'lastName': user['lastName'],
                              'email': user['email'],
                              'role': user['role'],
-                             'avatarUrl': user['avatarUrl'],
+                             #  'avatarUrl': user['avatarUrl'],
+                             #  'phone': user['phone'],
                              'access_token': access_token}
                 return jsonify(user_data)
             return {"msg": "Wrong password"}, 401

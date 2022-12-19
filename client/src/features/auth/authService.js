@@ -33,11 +33,9 @@ const userLoginGoogle = async (email, name, imageUrl) => {
 };
 
 const update = async (userData, token) => {
-  console.log(userData);
-  console.log(token);
   const response = await axios.put(`${API_URL}users/update`, userData, {
     headers: {
-      'Content-Type': 'multipart/form-data',
+      // 'Content-Type': 'multipart/form-data',
       Authorization: `Bearer ${token}`,
     },
   });

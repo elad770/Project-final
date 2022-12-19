@@ -16,6 +16,7 @@ class JSONEncoder(json.JSONEncoder):
 
 
 app = Flask(__name__)
+
 app.config.from_object('config')
 jwt = JWTManager(app)
 app.json_encoder = JSONEncoder

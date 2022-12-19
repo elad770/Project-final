@@ -30,6 +30,7 @@ Profile.propTypes = {
 export default function Profile({ isEdit = false, currentUser }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const { user, isError, isSuccess, message } = useSelector((state) => state.auth);
   const NewUserSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
@@ -71,6 +72,7 @@ export default function Profile({ isEdit = false, currentUser }) {
   const {
     reset,
     setValue,
+    getValues,
     clearErrors,
     setError,
     handleSubmit,
@@ -91,10 +93,13 @@ export default function Profile({ isEdit = false, currentUser }) {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      const name = 'avatarUrl';
-      delete data[name];
-      console.log(data);
-      dispatch(update(data));
+      const formData = new FormData();
+
+      delete data.avatarUrl;
+      formData.append('data', JSON.stringify(data));
+      formData.append('myFile', getValues('avatarUrl'));
+
+      dispatch(update(formData));
       reset();
       navigate('/dashboard'); // navigate to path that you want to be there after updated
       // console.log('DATA', data);
@@ -113,20 +118,6 @@ export default function Profile({ isEdit = false, currentUser }) {
 
       if (file) {
         setValue('avatarUrl', newFile, { shouldValidate: true });
-
-        const dat = new FormData();
-        dat.append('file', acceptedFiles[0]);
-        console.log(acceptedFiles[0]);
-
-        const data = new FormData();
-        data.append('file', acceptedFiles[0]);
-        fetch(`https://cleanly.onrender.com/users/uploadImage`, {
-          method: 'post',
-          headers: new Headers({
-            Authorization: `Bearer ${user.access_token}`,
-          }),
-          body: data,
-        });
       }
     },
     [setValue]

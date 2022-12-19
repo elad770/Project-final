@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
 from BLL.users import UsersBLL
+import json
 from pathlib import Path
 import os
 import random
@@ -36,66 +37,74 @@ class UsersRoute:
         @users.route("/update", methods=['put'])
         @jwt_required()
         def update_user():
-            # # print((request.json))
 
-            obj = request.form
+            obj = request.form['data']
             print(obj)
 
+            json_obj = json.loads(obj)
+            print(type(json_obj), json_obj)
+
+            # if len(request.files) > 0:
+            #     print(type(request.files['myFile']))
+            #     upload_image(request.files['myFile'])
             # get_jwt_identity contains email of user current
             email = get_jwt_identity()
-            self.user_bll.update_user_by_email(email, obj)
-            user = self.user_bll.get_user_by_email(obj['email'])
 
+            self.user_bll.update_user_by_email(email, json_obj)
+            user = self.user_bll.get_user_by_email(json_obj['email'])
+            upload_image(request.files, "myFile", user['_id'])
             del user["_id"]
-            if "password" in obj.keys():
+            if "password" in json_obj.keys():
                 del user["password"]
             # create token new
-            user["access_token"] = create_access_token(identity=obj['email'])
+            user["access_token"] = create_access_token(
+                identity=json_obj['email'])
             return jsonify(user)
 
         # upload image
 
-        @users.route("/uploadImage", methods=['post'])
-        @jwt_required()
-        def upload_image():
+        # @users.route("/uploadImage", methods=['post'])
+        # @jwt_required()
+        def upload_image(files, key, id_user):
+
             try:
-                file = request.files['file']
-                email = get_jwt_identity()
+                if len(request.files) > 0:
+                    print(type(request.files[key]))
+                    file = request.files[key]
+                    email = get_jwt_identity()
                 user = self.user_bll.get_user_by_email(email)
                 UPLOAD_FOLDER = "{0}".format(
                     "static/ImagesUsers")
                 print("Path UPLOAD_FOLDER ", not os.path.isdir(UPLOAD_FOLDER))
-                # if not os.path.isdir(UPLOAD_FOLDER):
-                #     os.makedirs(UPLOAD_FOLDER)
 
                 print("Path folder current ", Path(__file__).parent.parent)
                 print("UPLOAD_FOLDER {}".format(UPLOAD_FOLDER))
+
                 target = os.path.join(
-                    UPLOAD_FOLDER, 'user{0}'.format(user['_id']))
+                    UPLOAD_FOLDER, 'user{0}'.format(id_user))
                 print("target {}".format(target))
                 print("is not folder {}  & {}".format(not os.path.isdir(
                     UPLOAD_FOLDER), not os.path.isdir(target)))
-                print(file.filename)
+                # print(file.filename)
                 if not os.path.isdir(target):
                     os.makedirs(target)
+                if key == "myFile":
+                    # split file name In order to create a new name
+                    splitat = file.filename.rfind('.')
+                    left, right = file.filename[:splitat], file.filename[splitat:]
+                    #file_name_rand = str(random.randint(100000000, 500000000))
+                    #tr = 'http://192.168.199.1:8080/user_{0}'.format(user['_id'])
+                    # A concatenation of the original file name with the user id
+                    new_name_file = left + "_" + str(id_user) + right
+                    print(new_name_file)
 
-                # split file name In order to create a new name
-                splitat = file.filename.rfind('.')
-                left, right = file.filename[:splitat], file.filename[splitat:]
-                #file_name_rand = str(random.randint(100000000, 500000000))
-                #tr = 'http://192.168.199.1:8080/user_{0}'.format(user['_id'])
-                # A concatenation of the original file name with the user id
-                new_name_file = left + "_" + str(user['_id']) + right
-                print(new_name_file)
+                    destination = "/".join([
+                        target, new_name_file])
 
-                destination = "/".join([
-                                       target, new_name_file])
-                # destination2 = "/".join([
-                #     tr, new_name_file])
-                print(destination)
-                file.save(destination)
-                self.user_bll.update_user_by_email(
-                    email, {"avatarUrl": "https://cleanly.onrender.com/"+destination})
+                    print(destination)
+                    file.save(destination)
+                    self.user_bll.update_user_by_email(
+                        email, {"avatarUrl": "https://cleanly.onrender.com/"+destination})
 
             except Exception as e:
                 print("error", e)
