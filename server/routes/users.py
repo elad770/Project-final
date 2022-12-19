@@ -68,7 +68,7 @@ class UsersRoute:
                 target = os.path.join(
                     UPLOAD_FOLDER, 'user_{0}'.format(user['_id']))
                 print("target {}".format(target))
-                print("is not folder".format(not os.path.isdir(target)))
+                print("is not folder {}".format(not os.path.isdir(target)))
                 if not os.path.isdir(target):
                     os.mkdir(target)
                 print(file.filename)
