@@ -64,8 +64,10 @@ class UsersRoute:
                 user = self.user_bll.get_user_by_email(email)
                 UPLOAD_FOLDER = "{0}{1}".format(
                     Path(__file__).parent.parent, "\\Images_Users\\")
+                print("UPLOAD_FOLDER {}".format(UPLOAD_FOLDER))
                 target = os.path.join(
                     UPLOAD_FOLDER, 'user_{0}'.format(user['_id']))
+                print("target {}".format(target))
                 if not os.path.isdir(target):
                     os.mkdir(target)
                 print(file.filename)
@@ -73,15 +75,15 @@ class UsersRoute:
                 splitat = file.filename.rfind('.')
                 left, right = file.filename[:splitat], file.filename[splitat:]
                 #file_name_rand = str(random.randint(100000000, 500000000))
-                tr = 'http://192.168.199.1:8080/user_{0}'.format(user['_id'])
+                #tr = 'http://192.168.199.1:8080/user_{0}'.format(user['_id'])
                 # A concatenation of the original file name with the user id
                 new_name_file = left + "_" + str(user['_id']) + right
                 print(new_name_file)
 
                 destination = "/".join([
                                        target, new_name_file])
-                destination2 = "/".join([
-                    tr, new_name_file])
+                # destination2 = "/".join([
+                #     tr, new_name_file])
                 print(destination)
                 file.save(destination)
                 self.user_bll.update_user_by_email(
