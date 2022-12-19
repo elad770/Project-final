@@ -62,7 +62,8 @@ class UsersRoute:
                 file = request.files['file']
                 email = get_jwt_identity()
                 user = self.user_bll.get_user_by_email(email)
-                UPLOAD_FOLDER = "{0}".format("/static/ImagesUsers")
+                UPLOAD_FOLDER = "{0}".format(
+                    "static/ImagesUsers")
                 print("Path UPLOAD_FOLDER ", not os.path.isdir(UPLOAD_FOLDER))
                 if not os.path.isdir(UPLOAD_FOLDER):
                     os.makedirs(UPLOAD_FOLDER)
@@ -94,7 +95,7 @@ class UsersRoute:
                 print(destination)
                 file.save(destination)
                 self.user_bll.update_user_by_email(
-                    email, {"avatarUrl": destination})
+                    email, {"avatarUrl": "https://cleanly.onrender.com/"+destination})
 
             except Exception as e:
                 print("error", e)
