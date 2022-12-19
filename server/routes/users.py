@@ -68,6 +68,7 @@ class UsersRoute:
                 target = os.path.join(
                     UPLOAD_FOLDER, 'user_{0}'.format(user['_id']))
                 print("target {}".format(target))
+                print("is not folder".format(not os.path.isdir(target)))
                 if not os.path.isdir(target):
                     os.mkdir(target)
                 print(file.filename)
@@ -89,8 +90,8 @@ class UsersRoute:
                 self.user_bll.update_user_by_email(
                     email, {"avatarUrl": destination})
 
-            except:
-                print("error")
+            except Exception as e:
+                print("error", e)
                 return "error"
             print("succes")
             return "succes"
