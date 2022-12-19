@@ -63,7 +63,8 @@ class UsersRoute:
                 email = get_jwt_identity()
                 user = self.user_bll.get_user_by_email(email)
                 UPLOAD_FOLDER = "{0}{1}".format(
-                    Path(__file__).parent.parent, "/Images_Users")
+                    Path(__file__).parent, "/Images_Users")
+                print("Path folder current ", Path(__file__).parent)
                 print("UPLOAD_FOLDER {}".format(UPLOAD_FOLDER))
                 target = os.path.join(
                     UPLOAD_FOLDER, 'user_{0}'.format(user['_id']))
