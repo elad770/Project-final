@@ -62,12 +62,11 @@ class UsersRoute:
                 file = request.files['file']
                 email = get_jwt_identity()
                 user = self.user_bll.get_user_by_email(email)
-                UPLOAD_FOLDER = "{0}{1}".format(
-                    Path(__file__).parent.parent, "/static")
+                UPLOAD_FOLDER = "{0}".format("/static/ImagesUsers")
                 print("Path UPLOAD_FOLDER ", not os.path.isdir(UPLOAD_FOLDER))
                 if not os.path.isdir(UPLOAD_FOLDER):
-                    os.mkdir(UPLOAD_FOLDER)
-                    os.mkdir(UPLOAD_FOLDER+'/ImagesUsers')
+                    os.makedirs(UPLOAD_FOLDER)
+
                 print("Path folder current ", Path(__file__).parent.parent)
                 print("UPLOAD_FOLDER {}".format(UPLOAD_FOLDER))
                 target = os.path.join(
