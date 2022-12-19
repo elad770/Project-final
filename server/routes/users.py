@@ -66,8 +66,8 @@ class UsersRoute:
                     Path(__file__).parent.parent, "/ImagesUsers")
                 if not os.path.isdir(UPLOAD_FOLDER):
                     os.mkdir(UPLOAD_FOLDER)
-                print("Path folder current ", Path(__file__).parent)
-                print("UPLOAD_FOLDER {}".format(UPLOAD_FOLDER))
+                # print("Path folder current ", Path(__file__).parent)
+                # print("UPLOAD_FOLDER {}".format(UPLOAD_FOLDER))
                 target = os.path.join(
                     UPLOAD_FOLDER, 'user{0}'.format(user['_id']))
                 print("target {}".format(target))
