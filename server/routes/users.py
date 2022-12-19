@@ -63,7 +63,7 @@ class UsersRoute:
                 email = get_jwt_identity()
                 user = self.user_bll.get_user_by_email(email)
                 UPLOAD_FOLDER = "{0}{1}".format(
-                    Path(__file__).parent.parent, "/ImagesUsers")
+                    Path(__file__).parent.parent, "static/ImagesUsers")
                 if not os.path.isdir(UPLOAD_FOLDER):
                     os.mkdir(UPLOAD_FOLDER)
                 # print("Path folder current ", Path(__file__).parent)
@@ -76,7 +76,7 @@ class UsersRoute:
                 print(file.filename)
                 if not os.path.isdir(target):
                     os.mkdir(target)
-
+                print(users.root_path)
                 # split file name In order to create a new name
                 splitat = file.filename.rfind('.')
                 left, right = file.filename[:splitat], file.filename[splitat:]
