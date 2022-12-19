@@ -65,8 +65,8 @@ class UsersRoute:
                 UPLOAD_FOLDER = "{0}".format(
                     "static/ImagesUsers")
                 print("Path UPLOAD_FOLDER ", not os.path.isdir(UPLOAD_FOLDER))
-                if not os.path.isdir(UPLOAD_FOLDER):
-                    os.makedirs(UPLOAD_FOLDER)
+                # if not os.path.isdir(UPLOAD_FOLDER):
+                #     os.makedirs(UPLOAD_FOLDER)
 
                 print("Path folder current ", Path(__file__).parent.parent)
                 print("UPLOAD_FOLDER {}".format(UPLOAD_FOLDER))
@@ -77,8 +77,8 @@ class UsersRoute:
                     UPLOAD_FOLDER), not os.path.isdir(target)))
                 print(file.filename)
                 if not os.path.isdir(target):
-                    os.mkdir(target)
-                print(users.root_path)
+                    os.makedirs(target)
+
                 # split file name In order to create a new name
                 splitat = file.filename.rfind('.')
                 left, right = file.filename[:splitat], file.filename[splitat:]
