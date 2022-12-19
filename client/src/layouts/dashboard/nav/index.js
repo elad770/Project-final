@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+
 // @mui
 import { styled, alpha } from '@mui/material/styles';
 import { Box, Link, Drawer, Typography, Avatar } from '@mui/material';
@@ -63,7 +64,14 @@ export default function Nav({ openNav, onCloseNav }) {
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none">
           <StyledAccount>
-            <Avatar src={user.avatarUrl ? user.avatarUrl : account.photoURL} alt="photoURL" />
+            <Avatar
+              src={
+                user?.avatarUrl
+                  ? user.avatarUrl
+                  : 'http://192.168.199.1:8080/user_639b7947e12069aef528e318/e1f77a2c16cc54a43eb984f00fa27d14_639b7947e12069aef528e318.png'
+              }
+              alt="photoURL"
+            />
 
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>

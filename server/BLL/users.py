@@ -36,6 +36,7 @@ class UsersBLL:
         return 'Updated!'
 
     def update_user_by_email(self, email, obj):
+
         self.users.update_one({"email": email}, {"$set": obj})
         return 'Updated!'
 

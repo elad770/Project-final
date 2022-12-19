@@ -11,7 +11,7 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Card, Grid, Stack, Typography } from '@mui/material';
 // redux
 import { useDispatch, useSelector } from 'react-redux';
-import { update } from '../../../features/auth/authSlice';
+import { update, resetSlice } from '../../../features/auth/authSlice';
 // utils
 
 import { fData } from '../../../utils/formatNumber';
@@ -30,8 +30,7 @@ Profile.propTypes = {
 export default function Profile({ isEdit = false, currentUser }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
-
+  const { user, isError, isSuccess, message } = useSelector((state) => state.auth);
   const NewUserSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
@@ -72,19 +71,21 @@ export default function Profile({ isEdit = false, currentUser }) {
   const {
     reset,
     setValue,
+    clearErrors,
+    setError,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
 
   useEffect(() => {
-    if (isEdit && currentUser) {
+    if (isEdit && currentUser && isSuccess) {
       reset(defaultValues);
+    } else if (isError) {
+      setError('customError', { type: 'custom', message: `${message}` });
     }
-    if (!isEdit) {
-      reset(defaultValues);
-    }
+    dispatch(resetSlice());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEdit, currentUser]);
+  }, [currentUser, isError, isSuccess, message, setError, dispatch]);
 
   const onSubmit = async (data) => {
     try {
@@ -119,7 +120,7 @@ export default function Profile({ isEdit = false, currentUser }) {
 
         const data = new FormData();
         data.append('file', acceptedFiles[0]);
-        fetch(`http://127.0.0.1:5000/users/uploadImage`, {
+        fetch(`https://cleanly.onrender.com/users/uploadImage`, {
           method: 'post',
           headers: new Headers({
             Authorization: `Bearer ${user.access_token}`,
@@ -195,7 +196,12 @@ export default function Profile({ isEdit = false, currentUser }) {
               </Box>
 
               <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-                <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                <LoadingButton
+                  onClick={() => clearErrors('customError')}
+                  type="submit"
+                  variant="contained"
+                  loading={isSubmitting}
+                >
                   {!isEdit ? 'Create User' : 'Save Changes'}
                 </LoadingButton>
               </Stack>
