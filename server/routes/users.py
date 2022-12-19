@@ -69,7 +69,7 @@ class UsersRoute:
                 print("Path folder current ", Path(__file__).parent)
                 print("UPLOAD_FOLDER {}".format(UPLOAD_FOLDER))
                 target = os.path.join(
-                    UPLOAD_FOLDER, 'user_{0}'.format(user['_id']))
+                    UPLOAD_FOLDER, 'user{0}'.format(user['_id']))
                 print("target {}".format(target))
                 print("is not folder {}  & {}".format(not os.path.isdir(
                     UPLOAD_FOLDER), not os.path.isdir(target)))
