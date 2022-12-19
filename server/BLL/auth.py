@@ -17,6 +17,7 @@ class AuthBLL:
                              'lastName': user['lastName'],
                              'email': user['email'],
                              'role': user['role'],
+                             'avatarUrl': user['avatarUrl'],
                              'access_token': access_token}
                 return jsonify(user_data)
             return {"msg": "Wrong password"}, 401
