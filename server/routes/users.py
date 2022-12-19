@@ -64,10 +64,11 @@ class UsersRoute:
                 user = self.user_bll.get_user_by_email(email)
                 UPLOAD_FOLDER = "{0}{1}".format(
                     Path(__file__).parent.parent, "/static/ImagesUsers")
+                print("Path UPLOAD_FOLDER ", not os.path.isdir(UPLOAD_FOLDER))
                 if not os.path.isdir(UPLOAD_FOLDER):
                     os.mkdir(UPLOAD_FOLDER)
-                # print("Path folder current ", Path(__file__).parent)
-                # print("UPLOAD_FOLDER {}".format(UPLOAD_FOLDER))
+                print("Path folder current ", Path(__file__).parent.parent)
+                print("UPLOAD_FOLDER {}".format(UPLOAD_FOLDER))
                 target = os.path.join(
                     UPLOAD_FOLDER, 'user{0}'.format(user['_id']))
                 print("target {}".format(target))
