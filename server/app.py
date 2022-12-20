@@ -6,6 +6,7 @@ import json
 from bson import ObjectId
 from routes.users import UsersRoute
 from routes.auth import AuthRoute
+import gridfs
 
 
 class JSONEncoder(json.JSONEncoder):
@@ -23,8 +24,9 @@ app.json_encoder = JSONEncoder
 CORS(app)
 app.url_map.strict_slashes = False
 mongo = PyMongo(app)
+fs = gridfs.GridFS(mongo.db)
 
-users = UsersRoute(mongo.db)
+users = UsersRoute(mongo.db, fs)
 auth = AuthRoute(mongo.db)
 app.register_blueprint(users.users_blp, url_prefix="/users")
 app.register_blueprint(auth.auth_blp, url_prefix="/auth")

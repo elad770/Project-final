@@ -97,7 +97,7 @@ export default function Profile({ isEdit = false, currentUser }) {
 
       delete data.avatarUrl;
       formData.append('data', JSON.stringify(data));
-      formData.append('myFile', getValues('avatarUrl'));
+      formData.append('file_image', getValues('avatarUrl'));
 
       dispatch(update(formData));
       reset();

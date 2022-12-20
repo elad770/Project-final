@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://cleanly.onrender.com/';
+const API_URL = 'http://127.0.0.1:5000/';
 
 // Register user
 const register = async (userData) => {

@@ -13,14 +13,19 @@ class AuthBLL:
             # encode password
             if password == user['password']:
                 access_token = create_access_token(identity=email)
+                avatarUrl = ""
+                user_data = user
+                user_data["access_token"] = access_token
+                # if "avatarUrl" in user.keys():
+                #     avatarUrl = user['avatarUrl']
 
-                user_data = {'firstName': user['firstName'],
-                             'lastName': user['lastName'],
-                             'email': user['email'],
-                             'role': user['role'],
-                             #  'avatarUrl': user['avatarUrl'],
-                             #  'phone': user['phone'],
-                             'access_token': access_token}
+                # user_data = {'firstName': user['firstName'],
+                #              'lastName': user['lastName'],
+                #              'email': user['email'],
+                #              'role': user['role'],
+                #              'avatarUrl': avatarUrl,
+                #              #  'phone': user['phone'],
+                #              'access_token': access_token}
                 return jsonify(user_data)
             return {"msg": "Wrong password"}, 401
         return {"msg": "Wrong email"}, 401
